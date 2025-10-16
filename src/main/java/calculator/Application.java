@@ -1,6 +1,8 @@
 package calculator;
 
+import calculator.utils.Validator;
 import calculator.view.Input;
+import calculator.view.Output;
 
 public class Application {
 
@@ -8,11 +10,14 @@ public class Application {
 
     public static void main(String[] args) {
         try {
-            Input input = new Input(); // Input Class 바인딩
+            Input input = new Input();
+            Output output = new Output();
+
             String s = input.readInput();
             int result = calculate(s);
 
-            System.out.println("결과: " + result);
+            output.printCalcResult(result);
+
         } catch (IllegalArgumentException e) {
             throw e;
         }
@@ -26,23 +31,18 @@ public class Application {
         if (s == null || s.isEmpty()) {
             return 0;
         }
-        // 구분자, 숫자 문자열 분리
+
         String delimiter = DEFAULT_REGEX;
         String numbers = s;
 
         // 커스텀 구분자 처리
         if (s.startsWith("//")) {
             int delimiterEndIndex = s.indexOf("\n");
-            if (delimiterEndIndex == -1) {
-                throw new IllegalArgumentException("잘못된 형식입니다.");
-            }
+            Validator.validateDelimiterFormat(delimiterEndIndex); // Validator 사용
 
             String customDelimiter = s.substring(2, delimiterEndIndex);
-            if (customDelimiter.isEmpty()) {
-                throw new IllegalArgumentException("구분자가 없다");
-            }
+            Validator.validateDelimiterNotEmpty(customDelimiter); // Validator 사용
 
-            // 정규식 특수문자 이스케이프 처리
             delimiter = escapeRegex(customDelimiter);
             numbers = s.substring(delimiterEndIndex + 1);
         }
@@ -72,7 +72,7 @@ public class Application {
         for (String token : tokens) {
             if (!token.isEmpty()) {
                 int number = parseNumber(token);
-                validateNumber(number);
+                Validator.validateNumber(number); // Validator 사용 (기존 메서드 제거)
                 sum += number;
             }
         }
@@ -91,12 +91,5 @@ public class Application {
         }
     }
 
-    /**
-     * 숫자 유효성 검증(음수 확인)
-     */
-    private static void validateNumber(int number) {
-        if (number < 0) {
-            throw new IllegalArgumentException("음수는 입력할 수 없습니다: " + number);
-        }
-    }
+    // validateNumber 메서드 삭제 - Validator로 이동
 }
