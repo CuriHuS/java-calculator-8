@@ -26,11 +26,20 @@ class ApplicationTest extends NsTest {
     }
 
     @Test
-    @DisplayName("빈 문자열 입력 시 0을 반환한다")
-    void 빈_문자열_테스트() {
+    @DisplayName("올바른 예시")
+    void 정답_테스트() {
         assertSimpleTest(() -> {
-            run("");
-            assertThat(output()).contains("결과 : 0");
+            run("1,2:3");
+            assertThat(output()).contains("결과 : 6");
+        });
+    }
+
+    @Test
+    @DisplayName("올바른 예시")
+    void 정답_테스트2() {
+        assertSimpleTest(() -> {
+            run("1,2,3");
+            assertThat(output()).contains("결과 : 6");
         });
     }
 
