@@ -52,6 +52,15 @@ class ApplicationTest extends NsTest {
         });
     }
 
+    @Test
+    @DisplayName("마이너스 커스텀 테스트")
+    void 음수_구분_테스트() {
+        assertSimpleTest(() -> {
+            run("//-\\n1-2,3:4");
+            assertThat(output()).contains("결과 : 10");
+        });
+    }
+
     @Override
     public void runMain() {
         Application.main(new String[]{});
